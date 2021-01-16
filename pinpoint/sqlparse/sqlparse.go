@@ -55,6 +55,8 @@ var (
 // Ability to correctly parse queries for other SQL databases is not
 // guaranteed.
 func ParseQuery(segment *pinpoint.DatastoreSegment, query string) {
+	segment.ParameterizedQuery = query
+
 	s := cCommentRegex.ReplaceAllString(query, "")
 	s = lineCommentRegex.ReplaceAllString(s, "")
 	s = sqlPrefixRegex.ReplaceAllString(s, "")

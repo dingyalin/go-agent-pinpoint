@@ -572,8 +572,79 @@ func (thd *thread) End(recovered interface{}) error {
 	return nil
 }
 
+// db
+func handeDatastoreSpanEvent(evt *spanEvent, tSpanEvent *trace.TSpanEvent) {
+	isDatastore := false
+	if evt.Component == string(DatastoreMySQL) {
+		// serviceType
+		tSpanEvent.ServiceType = io.ServiceTypeMysqlExecuteQuery
+		isDatastore = true
+	} else if evt.Component == string(DatastoreRedis) {
+		// serviceType
+		tSpanEvent.ServiceType = io.ServiceTypeRedis
+		isDatastore = true
+	}
+
+	if isDatastore {
+		// destinationID
+		dbInstance := evt.AgentAttributes.getStringValue(SpanAttributeDBInstance)
+		if dbInstance == "" {
+			dbInstance = "UNKNOW"
+		}
+		tSpanEvent.DestinationId = &dbInstance
+		// endpoint
+		address := evt.AgentAttributes.getStringValue(SpanAttributePeerAddress)
+		if address == "" {
+			address = ":"
+		}
+		tSpanEvent.EndPoint = &address
+	}
+
+	// sql
+	statement := evt.AgentAttributes.getStringValue(SpanAttributeDBStatement)
+	if statement != "" {
+		tSpanEvent.Annotations = append(tSpanEvent.Annotations, &trace.TAnnotation{
+			Key: io.TAnnotationSQL,
+			Value: &trace.TAnnotationValue{
+				StringValue: &statement,
+			},
+		})
+	}
+
+}
+
+// url
+func handeExternalSpanEvent(evt *spanEvent, tSpanEvent *trace.TSpanEvent) {
+	// ServiceType
+	if evt.nextSpanID != -1 && evt.nextSpanID != 0 {
+		tSpanEvent.ServiceType = io.ServiceTypeHTTPClient
+	}
+	// url
+	if evt.rpc != nil {
+		tSpanEvent.Annotations = append(tSpanEvent.Annotations, &trace.TAnnotation{
+			Key: io.TAnnotationHTTPUrl,
+			Value: &trace.TAnnotationValue{
+				StringValue: evt.rpc,
+			},
+		})
+	}
+	// status code
+	if evt.statusCode != nil {
+		intValue := int32(*evt.statusCode)
+		tSpanEvent.Annotations = append(tSpanEvent.Annotations, &trace.TAnnotation{
+			Key: io.TAnnotationHTTPStatusCode,
+			Value: &trace.TAnnotationValue{
+				IntValue: &intValue,
+			},
+		})
+	}
+
+}
+
 func (txn *txn) getTSpanEventList() []*trace.TSpanEvent {
 	config := txn.Config
+
+	// async
 	var asyncID *int32
 	var asyncSequence *int16
 	if txn.IsAsync {
@@ -581,63 +652,40 @@ func (txn *txn) getTSpanEventList() []*trace.TSpanEvent {
 		asyncSequence = &txn.AsyncSequence
 	}
 
+	// tSpanEventList
 	tSpanEventList := []*trace.TSpanEvent{}
 	for _, evt := range txn.SpanEvents {
+		// skip entry point
 		if evt.IsEntrypoint {
-			// skip entry point
 			continue
 		}
-
-		nextSpanID := evt.nextSpanID
-		if nextSpanID == 0 {
-			nextSpanID = -1
+		// nextSpanID
+		if evt.nextSpanID == 0 {
+			evt.nextSpanID = -1
 		}
-
-		// annotations
-		annotations := []*trace.TAnnotation{}
-		var serviceType int16 = io.ServiceTypeGoMethod
-		if nextSpanID != -1 {
-			serviceType = io.ServiceTypeHTTPClient
-		}
-		// rpc
-		if evt.rpc != nil {
-			annotations = append(annotations, &trace.TAnnotation{
-				Key: io.TAnnotationHTTPUrl,
-				Value: &trace.TAnnotationValue{
-					StringValue: evt.rpc,
-				},
-			})
-		}
-		// status code
-		if evt.statusCode != nil {
-			intValue := int32(*evt.statusCode)
-			annotations = append(annotations, &trace.TAnnotation{
-				Key: io.TAnnotationHTTPStatusCode,
-				Value: &trace.TAnnotationValue{
-					IntValue: &intValue,
-				},
-			})
-		}
-		// sql
 
 		tSpanEvent := &trace.TSpanEvent{
 			Sequence:      evt.segmentStartTime.Sequence,         // from 1
 			Depth:         int32(evt.segmentStartTime.Depth + 2), // from 2
 			ApiId:         txn.getAPIID(evt.Name),
-			ServiceType:   serviceType,
+			ServiceType:   io.ServiceTypeGoMethod,
 			StartElapsed:  int32(evt.Timestamp.Sub(txn.Start).Milliseconds()),
-			Annotations:   annotations, //
+			Annotations:   []*trace.TAnnotation{},
 			DestinationId: evt.destinationID,
 			EndPoint:      evt.endPoint,
-			NextSpanId:    nextSpanID,
+			NextSpanId:    evt.nextSpanID,
 			NextAsyncId:   evt.nextAsyncID,
 			RPC:           evt.rpc,
 			EndElapsed:    int32(evt.Duration.Milliseconds()), // elaped time
 			AsyncId:       asyncID,
 			AsyncSequence: asyncSequence,
 		}
+		handeExternalSpanEvent(evt, tSpanEvent)
+		handeDatastoreSpanEvent(evt, tSpanEvent)
+
 		config.Logger.Debug("TSpanEvent", map[string]interface{}{
-			"TSpanEvent": fmt.Sprintf("%#v", tSpanEvent),
+			"TSpanEvent":      fmt.Sprintf("%#v", tSpanEvent),
+			"AgentAttributes": fmt.Sprintf("%#v", evt.AgentAttributes),
 		})
 		tSpanEventList = append(tSpanEventList, tSpanEvent)
 	}
@@ -693,8 +741,8 @@ func (txn *txn) getAnnotationsErr() (annotations []*trace.TAnnotation, err int32
 					IntValue: &intValue,
 				},
 			})
-
-			if statusCode >= 500 {
+			// err
+			if txn.responseCodeIsError(statusCode) {
 				err = 1
 			}
 		}

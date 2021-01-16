@@ -31,56 +31,11 @@ func noticeError(w http.ResponseWriter, r *http.Request) {
 	txn.NoticeError(errors.New("my error message"))
 }
 
-func noticeErrorWithAttributes(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "noticing an error")
-
-	txn := pinpoint.FromContext(r.Context())
-	txn.NoticeError(pinpoint.Error{
-		Message: "uh oh. something went very wrong",
-		Class:   "errors are aggregated by class",
-		Attributes: map[string]interface{}{
-			"important_number": 97232,
-			"relevant_string":  "zap",
-		},
-	})
-}
-
-func customEvent(w http.ResponseWriter, r *http.Request) {
-	txn := pinpoint.FromContext(r.Context())
-
-	io.WriteString(w, "recording a custom event")
-
-	txn.Application().RecordCustomEvent("my_event_type", map[string]interface{}{
-		"myString": "hello",
-		"myFloat":  0.603,
-		"myInt":    123,
-		"myBool":   true,
-	})
-}
-
 func setName(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "changing the transaction's name")
 
 	txn := pinpoint.FromContext(r.Context())
 	txn.SetName("other-name")
-}
-
-func addAttribute(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "adding attributes")
-
-	txn := pinpoint.FromContext(r.Context())
-	txn.AddAttribute("myString", "hello")
-	txn.AddAttribute("myInt", 123)
-}
-
-func addSpanAttribute(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "adding span attributes")
-
-	txn := pinpoint.FromContext(r.Context())
-	sgmt := txn.StartSegment("segment1")
-	defer sgmt.End()
-	sgmt.AddAttribute("mySpanString", "hello")
-	sgmt.AddAttribute("mySpanInt", 123)
 }
 
 func ignore(w http.ResponseWriter, r *http.Request) {
@@ -240,35 +195,13 @@ func async(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("done!"))
 }
 
-func customMetric(w http.ResponseWriter, r *http.Request) {
-	txn := pinpoint.FromContext(r.Context())
-	for _, vals := range r.Header {
-		for _, v := range vals {
-			// This custom metric will have the name
-			// "Custom/HeaderLength" in the New Relic UI.
-			txn.Application().RecordCustomMetric("HeaderLength", float64(len(v)))
-		}
-	}
-	io.WriteString(w, "custom metric recorded")
-}
-
-func browser(w http.ResponseWriter, r *http.Request) {
-	txn := pinpoint.FromContext(r.Context())
-	hdr := txn.BrowserTimingHeader()
-	// BrowserTimingHeader() will always return a header whose methods can
-	// be safely called.
-	if js := hdr.WithTags(); js != nil {
-		w.Write(js)
-	}
-	io.WriteString(w, "browser header page")
-}
-
 func main() {
 	app, err := pinpoint.NewApplication(
 		pinpoint.ConfigAppName("GoBaseDemo"),
 		pinpoint.ConfigAgentID("GoBaseDemo"),
 		//pinpoint.ConfigEnabled(false),
 		pinpoint.ConfigCollectorUploaded(false),
+		pinpoint.ConfigCollectorUploadedAgentStat(false),
 		pinpoint.ConfigCollectorIP("127.0.0.1"),
 		pinpoint.ConfigCollectorTCPPort(9994),
 		pinpoint.ConfigCollectorStatPort(9995),
@@ -283,18 +216,12 @@ func main() {
 	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/", index))
 	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/version", versionHandler))
 	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/notice_error", noticeError))
-	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/notice_error_with_attributes", noticeErrorWithAttributes))
-	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/custom_event", customEvent))
 	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/set_name", setName))
-	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/add_attribute", addAttribute))
-	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/add_span_attribute", addSpanAttribute))
 	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/ignore", ignore))
 	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/segments", segments))
 	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/mysql", mysql))
 	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/external", external))
 	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/roundtripper", roundtripper))
-	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/custommetric", customMetric))
-	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/browser", browser))
 	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/async", async))
 	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/message", message))
 

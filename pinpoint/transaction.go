@@ -96,6 +96,9 @@ func (txn *Transaction) NoticeError(err error) {
 	if nil == txn.thread {
 		return
 	}
+	if nil == err {
+		return
+	}
 	txn.thread.logAPIError(txn.thread.NoticeError(err), "notice error", nil)
 }
 
@@ -221,6 +224,15 @@ func (txn *Transaction) StartSegment(name string) *Segment {
 		StartTime: txn.StartSegmentNow(),
 		Name:      name,
 	}
+}
+
+// NextSpanID ...
+func (txn *Transaction) NextSpanID() int64 {
+	if txn.thread == nil {
+		return 0
+	}
+
+	return txn.thread.nextSpanID()
 }
 
 // InsertDistributedTraceHeaders adds the Distributed Trace headers used to

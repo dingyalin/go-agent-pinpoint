@@ -1,11 +1,11 @@
 package io
 
 const (
-	ServiceTypeHTTPClient = 9052
-	ServiceTypeUnkonwnDB  = 2050
-	ServiceTypeMysqlSQL   = 2100
-	ServiceTypeMysql      = 2101
-	ServiceTypeOracle     = 2300
+	ServiceTypeHTTPClient        = 9052
+	ServiceTypeUnkonwnDB         = 2050
+	ServiceTypeMysql             = 2100
+	ServiceTypeMysqlExecuteQuery = 2101
+	ServiceTypeOracle            = 2300
 
 	ServiceTypePython             = 1550
 	ServiceTypePythonMethod       = 1551

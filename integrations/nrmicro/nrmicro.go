@@ -30,10 +30,11 @@ func startExternal(ctx context.Context, procedure, host string) (context.Context
 	var seg pinpoint.ExternalSegment
 	if txn := pinpoint.FromContext(ctx); nil != txn {
 		seg = pinpoint.ExternalSegment{
-			StartTime: txn.StartSegmentNow(),
-			Procedure: procedure,
-			Library:   "Micro",
-			Host:      host,
+			StartTime:  txn.StartSegmentNow(),
+			Procedure:  procedure,
+			Library:    "Micro",
+			Host:       host,
+			NextSpanID: txn.NextSpanID(),
 		}
 		ctx = addDTPayloadToContext(ctx, txn, seg.NextSpanID)
 	}

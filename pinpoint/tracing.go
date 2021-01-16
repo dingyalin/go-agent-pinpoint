@@ -200,6 +200,26 @@ func (b boolJSONWriter) WriteJSON(buf *bytes.Buffer) {
 // value is a jsonWriter to allow for segment query parameters.
 type spanAttributeMap map[string]jsonWriter
 
+func (m *spanAttributeMap) getStringValue(key string) (val string) {
+	if m == nil {
+		return
+	}
+
+	jsonWriterVal, ok := (*m)[key]
+	if !ok {
+		return
+	}
+
+	strinJSONVal, ok := jsonWriterVal.(stringJSONWriter)
+	if !ok {
+		return
+	}
+
+	val = string(strinJSONVal)
+	return
+
+}
+
 func (m *spanAttributeMap) addString(key string, val string) {
 	if "" != val {
 		m.add(key, stringJSONWriter(val))

@@ -110,8 +110,11 @@ func (w *wrapDriver) OpenConnector(name string) (driver.Connector, error) {
 }
 
 func (w *wrapConnector) Connect(ctx context.Context) (driver.Conn, error) {
+	seg := w.bld.useQuery("connect").startSegment(ctx)
 	original, err := w.original.Connect(ctx)
+	seg.End()
 	if nil != err {
+		FromContext(ctx).NoticeError(err)
 		return nil, err
 	}
 	return optionalMethodsConn(&wrapConn{
@@ -171,6 +174,7 @@ func (w *wrapConn) ExecContext(ctx context.Context, query string, args []driver.
 	startTime := time.Now()
 	result, err := w.original.(driver.ExecerContext).ExecContext(ctx, query, args)
 	if err != driver.ErrSkip {
+		FromContext(ctx).NoticeError(err)
 		seg := w.bld.useQuery(query).startSegmentAt(ctx, startTime)
 		seg.End()
 	}
@@ -196,6 +200,7 @@ func (w *wrapConn) QueryContext(ctx context.Context, query string, args []driver
 	startTime := time.Now()
 	rows, err := w.original.(driver.QueryerContext).QueryContext(ctx, query, args)
 	if err != driver.ErrSkip {
+		FromContext(ctx).NoticeError(err)
 		seg := w.bld.useQuery(query).startSegmentAt(ctx, startTime)
 		seg.End()
 	}
@@ -237,6 +242,7 @@ func (w *wrapStmt) CheckNamedValue(v *driver.NamedValue) error {
 func (w *wrapStmt) ExecContext(ctx context.Context, args []driver.NamedValue) (driver.Result, error) {
 	segment := w.bld.startSegment(ctx)
 	result, err := w.original.(driver.StmtExecContext).ExecContext(ctx, args)
+	FromContext(ctx).NoticeError(err)
 	segment.End()
 	return result, err
 }
@@ -245,6 +251,7 @@ func (w *wrapStmt) ExecContext(ctx context.Context, args []driver.NamedValue) (d
 func (w *wrapStmt) QueryContext(ctx context.Context, args []driver.NamedValue) (driver.Rows, error) {
 	segment := w.bld.startSegment(ctx)
 	rows, err := w.original.(driver.StmtQueryContext).QueryContext(ctx, args)
+	FromContext(ctx).NoticeError(err)
 	segment.End()
 	return rows, err
 }
