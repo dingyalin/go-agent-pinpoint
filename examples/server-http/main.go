@@ -48,7 +48,7 @@ func (h *handler) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
 func makeApplication() (*pinpoint.Application, error) {
 	app, err := pinpoint.NewApplication(
 		pinpoint.ConfigAppName("HTTP Server App"),
-		pinpoint.ConfigLicense(os.Getenv("NEW_RELIC_LICENSE_KEY")),
+		pinpoint.ConfigLicense(os.Getenv("PINPOINT_LICENSE_KEY")),
 		pinpoint.ConfigDebugLogger(os.Stdout),
 		pinpoint.ConfigDistributedTracerEnabled(true),
 	)

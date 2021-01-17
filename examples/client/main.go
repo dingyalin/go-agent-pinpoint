@@ -31,7 +31,7 @@ func doRequest(txn *pinpoint.Transaction) error {
 func main() {
 	app, err := pinpoint.NewApplication(
 		pinpoint.ConfigAppName("Client App"),
-		pinpoint.ConfigLicense(os.Getenv("NEW_RELIC_LICENSE_KEY")),
+		pinpoint.ConfigLicense(os.Getenv("PINPOINT_LICENSE_KEY")),
 		pinpoint.ConfigDebugLogger(os.Stdout),
 		pinpoint.ConfigDistributedTracerEnabled(true),
 	)

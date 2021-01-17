@@ -13,7 +13,7 @@ import (
 
 var (
 	crossAgentDir = func() string {
-		if s := os.Getenv("NEW_RELIC_CROSS_AGENT_TESTS"); s != "" {
+		if s := os.Getenv("PINPOINT_CROSS_AGENT_TESTS"); s != "" {
 			return s
 		}
 		_, here, _, _ := runtime.Caller(0)

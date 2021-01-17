@@ -1,0 +1,15 @@
+---
+
+enabled: true
+app_name: my_app
+agent_id: my_agent
+collector:
+  ip: 127.0.0.1
+  tcp_port: 9994
+  stat_port: 9995
+  span_port: 9996
+log:	
+  # sets Logger to log to either "stdout" or "stderr" (filenames are not supported)
+  std: stdout
+  # controls the pinpoint log level, must be "debug" for debug, or empty for info
+  level: debug

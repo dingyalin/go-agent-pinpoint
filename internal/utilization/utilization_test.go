@@ -180,9 +180,9 @@ type utilizationCrossAgentTestcase struct {
 	PCFMemLimit       string          `json:"input_pcf_mem_limit"`
 	ExpectedOutput    json.RawMessage `json:"expected_output_json"`
 	Config            struct {
-		LogicalProcessors json.RawMessage `json:"NEW_RELIC_UTILIZATION_LOGICAL_PROCESSORS"`
-		RAWMMIB           json.RawMessage `json:"NEW_RELIC_UTILIZATION_TOTAL_RAM_MIB"`
-		Hostname          string          `json:"NEW_RELIC_UTILIZATION_BILLING_HOSTNAME"`
+		LogicalProcessors json.RawMessage `json:"PINPOINT_UTILIZATION_LOGICAL_PROCESSORS"`
+		RAWMMIB           json.RawMessage `json:"PINPOINT_UTILIZATION_TOTAL_RAM_MIB"`
+		Hostname          string          `json:"PINPOINT_UTILIZATION_BILLING_HOSTNAME"`
 		KubernetesHost    string          `json:"KUBERNETES_SERVICE_HOST"`
 	} `json:"input_environment_variables"`
 }

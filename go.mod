@@ -11,4 +11,5 @@ require (
 	github.com/stretchr/testify v1.6.1 // indirect
 	golang.org/x/sys v0.0.0-20210105210732-16f7687f5001 // indirect
 	google.golang.org/grpc v1.27.0
+	gopkg.in/yaml.v2 v2.4.0
 )

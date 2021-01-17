@@ -54,7 +54,7 @@ func startTransaction(ctx context.Context, app *pinpoint.Application, fullMethod
 //
 //	app, _ := pinpoint.NewApplication(
 //		pinpoint.ConfigAppName("gRPC Server"),
-//		pinpoint.ConfigLicense(os.Getenv("NEW_RELIC_LICENSE_KEY")),
+//		pinpoint.ConfigLicense(os.Getenv("PINPOINT_LICENSE_KEY")),
 //		pinpoint.ConfigDebugLogger(os.Stdout),
 //	)
 //	server := grpc.NewServer(
@@ -115,7 +115,7 @@ func newWrappedServerStream(stream grpc.ServerStream, txn *pinpoint.Transaction)
 //
 //	app, _ := pinpoint.NewApplication(
 //		pinpoint.ConfigAppName("gRPC Server"),
-//		pinpoint.ConfigLicense(os.Getenv("NEW_RELIC_LICENSE_KEY")),
+//		pinpoint.ConfigLicense(os.Getenv("PINPOINT_LICENSE_KEY")),
 //		pinpoint.ConfigDebugLogger(os.Stdout),
 //	)
 //	server := grpc.NewServer(

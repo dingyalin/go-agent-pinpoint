@@ -243,7 +243,7 @@ func TestCopyConfigReferenceFieldsPresent(t *testing.T) {
 			"custom_parameters":{"enabled":false}
 		},
 		"metadata":{
-			"NEW_RELIC_METADATA_ZAP":"zip"
+			"PINPOINT_METADATA_ZAP":"zip"
 		},
 		"event_harvest_config": {
 			"report_period_ms": 60000,
@@ -272,7 +272,7 @@ func TestCopyConfigReferenceFieldsPresent(t *testing.T) {
 	}
 
 	metadata := map[string]string{
-		"NEW_RELIC_METADATA_ZAP": "zip",
+		"PINPOINT_METADATA_ZAP": "zip",
 	}
 	js, err := configConnectJSONInternal(cp, 123, &utilization.SampleData, sampleEnvironment, "0.2.2", sp.PointerIfPopulated(), metadata)
 	if nil != err {
@@ -542,22 +542,22 @@ func TestGatherMetadata(t *testing.T) {
 		t.Error(metadata)
 	}
 	metadata = gatherMetadata([]string{
-		"NEW_RELIC_METADATA_ZIP=zap",
-		"NEW_RELIC_METADATA_PIZZA=cheese",
-		"NEW_RELIC_METADATA_=hello",
-		"NEW_RELIC_METADATA_LOTS_OF_EQUALS=one=two",
-		"NEW_RELIC_METADATA_",
-		"NEW_RELIC_METADATA_NO_EQUALS",
-		"NEW_RELIC_METADATA_EMPTY=",
-		"NEW_RELIC_",
+		"PINPOINT_METADATA_ZIP=zap",
+		"PINPOINT_METADATA_PIZZA=cheese",
+		"PINPOINT_METADATA_=hello",
+		"PINPOINT_METADATA_LOTS_OF_EQUALS=one=two",
+		"PINPOINT_METADATA_",
+		"PINPOINT_METADATA_NO_EQUALS",
+		"PINPOINT_METADATA_EMPTY=",
+		"PINPOINT_",
 		"hello=world",
 	})
 	if !reflect.DeepEqual(metadata, map[string]string{
-		"NEW_RELIC_METADATA_ZIP":            "zap",
-		"NEW_RELIC_METADATA_PIZZA":          "cheese",
-		"NEW_RELIC_METADATA_":               "hello",
-		"NEW_RELIC_METADATA_LOTS_OF_EQUALS": "one=two",
-		"NEW_RELIC_METADATA_EMPTY":          "",
+		"PINPOINT_METADATA_ZIP":            "zap",
+		"PINPOINT_METADATA_PIZZA":          "cheese",
+		"PINPOINT_METADATA_":               "hello",
+		"PINPOINT_METADATA_LOTS_OF_EQUALS": "one=two",
+		"PINPOINT_METADATA_EMPTY":          "",
 	}) {
 		t.Error(metadata)
 	}
@@ -753,7 +753,7 @@ func TestNewInternalConfig(t *testing.T) {
 			return "mydyno"
 		}
 		return ""
-	}, []string{"NEW_RELIC_METADATA_ZIP=ZAP"})
+	}, []string{"PINPOINT_METADATA_ZIP=ZAP"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -768,7 +768,7 @@ func TestNewInternalConfig(t *testing.T) {
 		t.Error(c.hostname)
 	}
 	if !reflect.DeepEqual(c.metadata, map[string]string{
-		"NEW_RELIC_METADATA_ZIP": "ZAP",
+		"PINPOINT_METADATA_ZIP": "ZAP",
 	}) {
 		t.Error(c.metadata)
 	}

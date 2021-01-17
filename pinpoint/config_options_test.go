@@ -8,70 +8,99 @@ import (
 	"testing"
 )
 
+func TestConfigFromYaml(t *testing.T) {
+	var data = `
+enabled: false
+app_name: my_app
+agent_id: my_agent
+collector:
+  ip: 10.10.10.10
+  tcp_port: 9984
+  stat_port: 9985
+  span_port: 9986
+log:	
+  std: 
+  level: 
+`
+
+	cfgOpt := configFromYaml([]byte(data), nil)
+	cfg := defaultConfig()
+	cfgOpt(&cfg)
+
+	expect := defaultConfig()
+	expect.Enabled = false
+	expect.AppName = "my_app"
+	expect.AgentID = "my_agent"
+	expect.Collector.IP = "10.10.10.10"
+	expect.Collector.TCPPort = 9984
+	expect.Collector.StatPort = 9985
+	expect.Collector.SpanPort = 9986
+
+	if !reflect.DeepEqual(expect, cfg) {
+		t.Errorf("cfg   : %#v", cfg)
+		t.Errorf("expect: %#v", expect)
+	}
+}
+
 func TestConfigFromEnvironment(t *testing.T) {
 	cfgOpt := configFromEnvironment(func(s string) string {
 		switch s {
-		case "NEW_RELIC_APP_NAME":
+		case "PINPOINT_APP_NAME":
 			return "my app"
-		case "NEW_RELIC_LICENSE_KEY":
-			return "my license"
-		case "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED":
+		case "PINPOINT_AGENT_ID":
+			return "my agent id"
+		case "PINPOINT_COLLECTOR_IP":
+			return "10.10.10.10"
+		case "PINPOINT_COLLECTOR_TCP_PORT":
+			return "9984"
+		case "PINPOINT_COLLECTOR_STAT_PORT":
+			return "9985"
+		case "PINPOINT_COLLECTOR_SPAN_PORT":
+			return "9986"
+		case "PINPOINT_DISTRIBUTED_TRACING_ENABLED":
 			return "true"
-		case "NEW_RELIC_ENABLED":
+		case "PINPOINT_ENABLED":
 			return "false"
-		case "NEW_RELIC_HIGH_SECURITY":
+		case "PINPOINT_HIGH_SECURITY":
 			return "1"
-		case "NEW_RELIC_SECURITY_POLICIES_TOKEN":
-			return "my token"
-		case "NEW_RELIC_HOST":
+		case "PINPOINT_HOST":
 			return "my host"
-		case "NEW_RELIC_PROCESS_HOST_DISPLAY_NAME":
+		case "PINPOINT_PROCESS_HOST_DISPLAY_NAME":
 			return "my display host"
-		case "NEW_RELIC_UTILIZATION_BILLING_HOSTNAME":
-			return "my billing hostname"
-		case "NEW_RELIC_UTILIZATION_LOGICAL_PROCESSORS":
-			return "123"
-		case "NEW_RELIC_UTILIZATION_TOTAL_RAM_MIB":
-			return "456"
-		case "NEW_RELIC_LABELS":
+		case "PINPOINT_LABELS":
 			return "star:car;far:bar"
-		case "NEW_RELIC_ATTRIBUTES_INCLUDE":
+		case "PINPOINT_ATTRIBUTES_INCLUDE":
 			return "zip,zap"
-		case "NEW_RELIC_ATTRIBUTES_EXCLUDE":
+		case "PINPOINT_ATTRIBUTES_EXCLUDE":
 			return "zop,zup,zep"
-		case "NEW_RELIC_INFINITE_TRACING_TRACE_OBSERVER_HOST":
-			return "myhost.com"
-		case "NEW_RELIC_INFINITE_TRACING_TRACE_OBSERVER_PORT":
-			return "456"
-		case "NEW_RELIC_INFINITE_TRACING_SPAN_EVENTS_QUEUE_SIZE":
+		case "PINPOINT_INFINITE_TRACING_SPAN_EVENTS_QUEUE_SIZE":
 			return "98765"
 		}
 		return ""
 	})
 	expect := defaultConfig()
 	expect.AppName = "my app"
-	expect.License = "my license"
+	expect.AgentID = "my agent id"
+	expect.Collector.IP = "10.10.10.10"
+	expect.Collector.TCPPort = 9984
+	expect.Collector.StatPort = 9985
+	expect.Collector.SpanPort = 9986
 	expect.DistributedTracer.Enabled = true
 	expect.Enabled = false
 	expect.HighSecurity = true
-	expect.SecurityPoliciesToken = "my token"
 	expect.Host = "my host"
 	expect.HostDisplayName = "my display host"
-	expect.Utilization.BillingHostname = "my billing hostname"
-	expect.Utilization.LogicalProcessors = 123
-	expect.Utilization.TotalRAMMIB = 456
 	expect.Labels = map[string]string{"star": "car", "far": "bar"}
 	expect.Attributes.Include = []string{"zip", "zap"}
 	expect.Attributes.Exclude = []string{"zop", "zup", "zep"}
-	expect.InfiniteTracing.TraceObserver.Host = "myhost.com"
-	expect.InfiniteTracing.TraceObserver.Port = 456
 	expect.InfiniteTracing.SpanEvents.QueueSize = 98765
 
 	cfg := defaultConfig()
 	cfgOpt(&cfg)
 
 	if !reflect.DeepEqual(expect, cfg) {
-		t.Error(cfg)
+		t.Errorf("cfg   : %#v", cfg)
+		t.Errorf("expect: %#v", expect)
 	}
 }
 
@@ -139,9 +168,9 @@ func TestConfigFromEnvironmentIgnoresUnset(t *testing.T) {
 func TestConfigFromEnvironmentAttributes(t *testing.T) {
 	cfgOpt := configFromEnvironment(func(s string) string {
 		switch s {
-		case "NEW_RELIC_ATTRIBUTES_INCLUDE":
+		case "PINPOINT_ATTRIBUTES_INCLUDE":
 			return "zip,zap"
-		case "NEW_RELIC_ATTRIBUTES_EXCLUDE":
+		case "PINPOINT_ATTRIBUTES_EXCLUDE":
 			return "zop,zup,zep"
 		default:
 			return ""
@@ -160,7 +189,7 @@ func TestConfigFromEnvironmentAttributes(t *testing.T) {
 func TestConfigFromEnvironmentInvalidBool(t *testing.T) {
 	cfgOpt := configFromEnvironment(func(s string) string {
 		switch s {
-		case "NEW_RELIC_ENABLED":
+		case "PINPOINT_ENABLED":
 			return "BOGUS"
 		default:
 			return ""
@@ -176,7 +205,7 @@ func TestConfigFromEnvironmentInvalidBool(t *testing.T) {
 func TestConfigFromEnvironmentInvalidInt(t *testing.T) {
 	cfgOpt := configFromEnvironment(func(s string) string {
 		switch s {
-		case "NEW_RELIC_UTILIZATION_LOGICAL_PROCESSORS":
+		case "PINPOINT_UTILIZATION_LOGICAL_PROCESSORS":
 			return "BOGUS"
 		default:
 			return ""
@@ -192,7 +221,7 @@ func TestConfigFromEnvironmentInvalidInt(t *testing.T) {
 func TestConfigFromEnvironmentInvalidLogger(t *testing.T) {
 	cfgOpt := configFromEnvironment(func(s string) string {
 		switch s {
-		case "NEW_RELIC_LOG":
+		case "PINPOINT_LOG":
 			return "BOGUS"
 		default:
 			return ""
@@ -208,7 +237,7 @@ func TestConfigFromEnvironmentInvalidLogger(t *testing.T) {
 func TestConfigFromEnvironmentInvalidLabels(t *testing.T) {
 	cfgOpt := configFromEnvironment(func(s string) string {
 		switch s {
-		case "NEW_RELIC_LABELS":
+		case "PINPOINT_LABELS":
 			return ";;;"
 		default:
 			return ""
@@ -224,7 +253,7 @@ func TestConfigFromEnvironmentInvalidLabels(t *testing.T) {
 func TestConfigFromEnvironmentLabelsSuccess(t *testing.T) {
 	cfgOpt := configFromEnvironment(func(s string) string {
 		switch s {
-		case "NEW_RELIC_LABELS":
+		case "PINPOINT_LABELS":
 			return "zip:zap; zop:zup"
 		default:
 			return ""

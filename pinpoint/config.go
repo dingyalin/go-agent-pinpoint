@@ -43,11 +43,11 @@ type Config struct {
 		// IP
 		IP string
 		// TCPPort tcp port
-		TCPPort uint16
+		TCPPort int
 		// StatPort stat port
-		StatPort uint16
+		StatPort int
 		// SpanPort span port
-		SpanPort uint16
+		SpanPort int
 		// Uploaded is upload
 		Uploaded bool
 		// UploadedAgentStat
@@ -352,7 +352,7 @@ type Config struct {
 		Enabled bool
 		// ApdexThreshold sets the Apdex threshold when in ServerlessMode.  The
 		// default is 500 milliseconds.  nrlambda.NewConfig populates this
-		// field using the NEW_RELIC_APDEX_T environment variable.
+		// field using the PINPOINT_APDEX_T environment variable.
 		//
 		// https://docs.newrelic.com/docs/apm/new-relic-apm/apdex/apdex-measure-user-satisfaction
 		ApdexThreshold time.Duration
@@ -360,8 +360,8 @@ type Config struct {
 		// distributed tracing in ServerlessMode.  AccountID and
 		// TrustedAccountKey must be populated for distributed tracing to be
 		// enabled. nrlambda.NewConfig populates these fields using the
-		// NEW_RELIC_ACCOUNT_ID, NEW_RELIC_TRUSTED_ACCOUNT_KEY, and
-		// NEW_RELIC_PRIMARY_APPLICATION_ID environment variables.
+		// PINPOINT_ACCOUNT_ID, PINPOINT_TRUSTED_ACCOUNT_KEY, and
+		// PINPOINT_PRIMARY_APPLICATION_ID environment variables.
 		AccountID         string
 		TrustedAccountKey string
 		PrimaryAppID      string
@@ -721,7 +721,7 @@ func configConnectJSONInternal(c Config, pid int, util *utilization.Data, e envi
 
 const (
 	// https://source.datanerd.us/agents/agent-specs/blob/master/Connect-LEGACY.md#metadata-hash
-	metadataPrefix = "NEW_RELIC_METADATA_"
+	metadataPrefix = "PINPOINT_METADATA_"
 )
 
 func gatherMetadata(env []string) map[string]string {
@@ -792,10 +792,6 @@ func newInternalConfig(cfg Config, getenv func(string) string, environ []string)
 		hostname = host
 	} else {
 		hostname = "unknown"
-	}
-	// env enabled
-	if getenv("PINPOINT_MONITOR_ENABLED") == "false" {
-		cfg.Enabled = false
 	}
 
 	return config{

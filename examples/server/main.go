@@ -197,16 +197,10 @@ func async(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	app, err := pinpoint.NewApplication(
-		pinpoint.ConfigAppName("GoBaseDemo"),
-		pinpoint.ConfigAgentID("GoBaseDemo"),
-		//pinpoint.ConfigEnabled(false),
 		pinpoint.ConfigCollectorUploaded(false),
-		pinpoint.ConfigCollectorUploadedAgentStat(false),
-		pinpoint.ConfigCollectorIP("127.0.0.1"),
-		pinpoint.ConfigCollectorTCPPort(9994),
-		pinpoint.ConfigCollectorStatPort(9995),
-		pinpoint.ConfigCollectorSpanPort(9996),
+		pinpoint.ConfigFromYaml("./pinpoint.yml"),
 		pinpoint.ConfigDebugLogger(os.Stdout),
+		pinpoint.ConfigFromEnvironment(),
 	)
 	if nil != err {
 		fmt.Println(err)

@@ -39,8 +39,8 @@
     "input_full_hostname": "myotherhost.com",
     "input_ip_address": ["::FFFF:129.144.52.38"],
     "input_environment_variables": {
-      "NEW_RELIC_UTILIZATION_LOGICAL_PROCESSORS": 8,
-      "NEW_RELIC_UTILIZATION_TOTAL_RAM_MIB": 2048
+      "PINPOINT_UTILIZATION_LOGICAL_PROCESSORS": 8,
+      "PINPOINT_UTILIZATION_TOTAL_RAM_MIB": 2048
     },
     "expected_output_json": {
       "metadata_version": 5,
@@ -63,9 +63,9 @@
     "input_full_hostname": "myotherhost.com",
     "input_ip_address": ["8.8.8.8"],
     "input_environment_variables": {
-      "NEW_RELIC_UTILIZATION_LOGICAL_PROCESSORS": 16,
-      "NEW_RELIC_UTILIZATION_TOTAL_RAM_MIB": 4096,
-      "NEW_RELIC_UTILIZATION_BILLING_HOSTNAME": "localhost"
+      "PINPOINT_UTILIZATION_LOGICAL_PROCESSORS": 16,
+      "PINPOINT_UTILIZATION_TOTAL_RAM_MIB": 4096,
+      "PINPOINT_UTILIZATION_BILLING_HOSTNAME": "localhost"
     },
     "expected_output_json": {
       "metadata_version": 5,
@@ -89,9 +89,9 @@
     "input_full_hostname": "myotherhost.com",
     "input_ip_address": ["2001:0db8:0000:0042:0000:8a2e:0370:7334"],
     "input_environment_variables": {
-      "NEW_RELIC_UTILIZATION_LOGICAL_PROCESSORS": "abc",
-      "NEW_RELIC_UTILIZATION_TOTAL_RAM_MIB": 4096,
-      "NEW_RELIC_UTILIZATION_BILLING_HOSTNAME": "localhost"
+      "PINPOINT_UTILIZATION_LOGICAL_PROCESSORS": "abc",
+      "PINPOINT_UTILIZATION_TOTAL_RAM_MIB": 4096,
+      "PINPOINT_UTILIZATION_BILLING_HOSTNAME": "localhost"
     },
     "expected_output_json": {
       "metadata_version": 5,
@@ -114,9 +114,9 @@
     "input_full_hostname": "myotherhost.com",
     "input_ip_address": ["2001:0db8:0000:0042:0000:8a2e:0370:7334"],
     "input_environment_variables": {
-      "NEW_RELIC_UTILIZATION_LOGICAL_PROCESSORS": 8,
-      "NEW_RELIC_UTILIZATION_TOTAL_RAM_MIB": "notgood",
-      "NEW_RELIC_UTILIZATION_BILLING_HOSTNAME": "localhost"
+      "PINPOINT_UTILIZATION_LOGICAL_PROCESSORS": 8,
+      "PINPOINT_UTILIZATION_TOTAL_RAM_MIB": "notgood",
+      "PINPOINT_UTILIZATION_BILLING_HOSTNAME": "localhost"
     },
     "expected_output_json": {
       "metadata_version": 5,
@@ -325,8 +325,8 @@
     "input_full_hostname": "myotherhost.com",
     "input_ip_address": ["::FFFF:129.144.52.38"],
     "input_environment_variables": {
-      "NEW_RELIC_UTILIZATION_LOGICAL_PROCESSORS": 8,
-      "NEW_RELIC_UTILIZATION_TOTAL_RAM_MIB": 2048,
+      "PINPOINT_UTILIZATION_LOGICAL_PROCESSORS": 8,
+      "PINPOINT_UTILIZATION_TOTAL_RAM_MIB": 2048,
       "KUBERNETES_SERVICE_HOST": "10.96.0.1"
     },
     "expected_output_json": {
@@ -355,8 +355,8 @@
     "input_full_hostname": "myotherhost.com",
     "input_ip_address": ["::FFFF:129.144.52.38"],
     "input_environment_variables": {
-      "NEW_RELIC_UTILIZATION_LOGICAL_PROCESSORS": 8,
-      "NEW_RELIC_UTILIZATION_TOTAL_RAM_MIB": 2048,
+      "PINPOINT_UTILIZATION_LOGICAL_PROCESSORS": 8,
+      "PINPOINT_UTILIZATION_TOTAL_RAM_MIB": 2048,
       "KUBERNETES_SERVICE_PORT": "8080"
     },
     "expected_output_json": {

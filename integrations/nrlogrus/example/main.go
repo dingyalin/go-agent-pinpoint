@@ -19,7 +19,7 @@ func main() {
 
 	app, err := pinpoint.NewApplication(
 		pinpoint.ConfigAppName("Logrus App"),
-		pinpoint.ConfigLicense(os.Getenv("NEW_RELIC_LICENSE_KEY")),
+		pinpoint.ConfigLicense(os.Getenv("PINPOINT_LICENSE_KEY")),
 		nrlogrus.ConfigStandardLogger(),
 	)
 

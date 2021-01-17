@@ -21,7 +21,7 @@ func Example() {
 	// any other configuration options.
 	app, err := pinpoint.NewApplication(
 		pinpoint.ConfigAppName("Example Application"),
-		pinpoint.ConfigLicense("__YOUR_NEW_RELIC_LICENSE_KEY__"),
+		pinpoint.ConfigLicense("__YOUR_PINPOINT_LICENSE_KEY__"),
 		pinpoint.ConfigDebugLogger(os.Stdout),
 	)
 	if nil != err {
@@ -286,7 +286,7 @@ func ExampleTransaction_SetWebResponse() {
 // The order in which the ConfigOptions are added plays an important role when
 // using ConfigFromEnvironment.
 func ExampleConfigFromEnvironment() {
-	os.Setenv("NEW_RELIC_ENABLED", "true")
+	os.Setenv("PINPOINT_ENABLED", "true")
 
 	// Application is disabled.  Enabled is first set to true from
 	// ConfigFromEnvironment then set to false from ConfigEnabled.
@@ -317,7 +317,7 @@ func ExampleNewApplication_configOptionOrder() {
 func ExampleConfigOption_custom() {
 	_, _ = pinpoint.NewApplication(
 		pinpoint.ConfigAppName("Example App"),
-		pinpoint.ConfigLicense("__YOUR_NEW_RELIC_LICENSE_KEY__"),
+		pinpoint.ConfigLicense("__YOUR_PINPOINT_LICENSE_KEY__"),
 		func(cfg *pinpoint.Config) {
 			// Set specific Config fields inside a custom ConfigOption.
 			cfg.Attributes.Enabled = false
@@ -333,7 +333,7 @@ func ExampleConfigOption_errors() {
 
 	_, err := pinpoint.NewApplication(
 		pinpoint.ConfigAppName("Example App"),
-		pinpoint.ConfigLicense("__YOUR_NEW_RELIC_LICENSE_KEY__"),
+		pinpoint.ConfigLicense("__YOUR_PINPOINT_LICENSE_KEY__"),
 		func(cfg *pinpoint.Config) {
 			cfg.Error = myError
 		},
