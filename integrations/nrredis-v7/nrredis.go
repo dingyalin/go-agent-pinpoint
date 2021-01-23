@@ -62,6 +62,7 @@ func (h hook) before(ctx context.Context, operation string) (context.Context, er
 	s := h.segment
 	s.StartTime = txn.StartSegmentNow()
 	s.Operation = operation
+	s.ParameterizedQuery = operation
 	ctx = context.WithValue(ctx, segmentContextKey, &s)
 	return ctx, nil
 }

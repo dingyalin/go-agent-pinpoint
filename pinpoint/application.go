@@ -137,5 +137,15 @@ func NewApplication(opts ...ConfigOption) (*Application, error) {
 	if nil != err {
 		return nil, err
 	}
+	if !cfg.Enabled {
+		if nil != cfg.Logger {
+			cfg.Logger.Info("DisEnabled Pinpoint", map[string]interface{}{
+				"app":     cfg.AppName,
+				"version": Version,
+				"enabled": cfg.Enabled,
+			})
+		}
+		return nil, nil
+	}
 	return newApplication(newApp(cfg)), nil
 }

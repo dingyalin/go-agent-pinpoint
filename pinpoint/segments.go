@@ -265,6 +265,9 @@ func StartSegmentNow(txn *Transaction) SegmentStartTime {
 // Deprecated: StartSegment is deprecated and will be removed in a future
 // release.  Use Transaction.StartSegment instead.
 func StartSegment(txn *Transaction, name string) *Segment {
+	if nil == txn {
+		return nil
+	}
 	return &Segment{
 		StartTime: txn.StartSegmentNow(),
 		Name:      name,

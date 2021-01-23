@@ -9,7 +9,6 @@ import (
 	"io"
 	"math/rand"
 	"net/http"
-	"os"
 	"sync"
 	"time"
 
@@ -200,10 +199,10 @@ func main() {
 		//pinpoint.ConfigCollectorUploaded(false),
 		pinpoint.ConfigFromYaml("./pinpoint.yml"),
 		pinpoint.ConfigFromEnvironment(),
+		//pinpoint.ConfigEnabled(false),
 	)
 	if nil != err {
 		fmt.Println(err)
-		os.Exit(1)
 	}
 
 	http.HandleFunc(pinpoint.WrapHandleFunc(app, "/", index))

@@ -90,8 +90,10 @@ func NewRoundTripper(original http.RoundTripper) http.RoundTripper {
 
 		response, err := original.RoundTrip(request)
 
-		segment.Response = response
-		segment.End()
+		if nil != segment {
+			segment.Response = response
+			segment.End()
+		}
 
 		return response, err
 	})

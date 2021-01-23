@@ -120,6 +120,10 @@ func (txn *txn) markEnd(now time.Time, thread *tracingThread) {
 }
 
 func (txn *txn) nextSpanID() int64 {
+	if nil == txn {
+		return -1
+	}
+
 	for {
 		spanID := genRandSpanID()
 		metadata := txn.txnData.CrossProcess.InboundMetadata
