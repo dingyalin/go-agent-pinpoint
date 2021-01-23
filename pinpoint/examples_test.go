@@ -20,9 +20,8 @@ func Example() {
 	// Create your application using your preferred app name, license key, and
 	// any other configuration options.
 	app, err := pinpoint.NewApplication(
-		pinpoint.ConfigAppName("Example Application"),
-		pinpoint.ConfigLicense("__YOUR_PINPOINT_LICENSE_KEY__"),
-		pinpoint.ConfigDebugLogger(os.Stdout),
+		pinpoint.ConfigFromYaml("./pinpoint.yml"),
+		pinpoint.ConfigFromEnvironment(),
 	)
 	if nil != err {
 		fmt.Println(err)

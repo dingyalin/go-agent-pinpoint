@@ -53,10 +53,8 @@ func calling(app *pinpoint.Application) {
 
 func makeApplication(name string) (*pinpoint.Application, error) {
 	app, err := pinpoint.NewApplication(
-		pinpoint.ConfigAppName(name),
-		pinpoint.ConfigLicense(os.Getenv("PINPOINT_LICENSE_KEY")),
-		pinpoint.ConfigDebugLogger(os.Stdout),
-		pinpoint.ConfigDistributedTracerEnabled(true),
+		pinpoint.ConfigFromYaml("./pinpoint.yml"),
+		pinpoint.ConfigFromEnvironment(),
 	)
 	if nil != err {
 		return nil, err

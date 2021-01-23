@@ -7,7 +7,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/dingyalin/pinpoint-go-agent/integrations/nrmicro"
@@ -38,16 +37,8 @@ func publish(s micro.Service, app *pinpoint.Application) {
 
 func main() {
 	app, err := pinpoint.NewApplication(
-		pinpoint.ConfigAppName("GoMicroPubSubDemo"),
-		pinpoint.ConfigAgentID("GoMicroPubSubDemo"),
-		//pinpoint.ConfigEnabled(false),
-		pinpoint.ConfigCollectorUploaded(false),
-		//pinpoint.ConfigCollectorUploadedAgentStat(false),
-		pinpoint.ConfigCollectorIP("127.0.0.1"),
-		pinpoint.ConfigCollectorTCPPort(9994),
-		pinpoint.ConfigCollectorStatPort(9995),
-		pinpoint.ConfigCollectorSpanPort(9996),
-		pinpoint.ConfigDebugLogger(os.Stdout),
+		pinpoint.ConfigFromYaml("./pinpoint.yml"),
+		pinpoint.ConfigFromEnvironment(),
 	)
 	if nil != err {
 		panic(err)

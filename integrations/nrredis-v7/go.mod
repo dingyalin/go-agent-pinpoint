@@ -5,8 +5,8 @@ module github.com/dingyalin/pinpoint-go-agent/integrations/nrredis-v7
 go 1.11
 
 require (
-	github.com/go-redis/redis/v7 v7.4.0
 	github.com/dingyalin/pinpoint-go-agent v1.0.0
+	github.com/go-redis/redis/v7 v7.2.0
 )
 
 replace github.com/dingyalin/pinpoint-go-agent v1.0.0 => ../../

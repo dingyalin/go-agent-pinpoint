@@ -8,7 +8,6 @@ import (
 	fmt "fmt"
 	"io"
 	"net"
-	"os"
 
 	"github.com/dingyalin/pinpoint-go-agent/integrations/nrgrpc"
 	sampleapp "github.com/dingyalin/pinpoint-go-agent/integrations/nrgrpc/example/sampleapp"
@@ -73,14 +72,8 @@ func (s *Server) DoStreamStream(stream sampleapp.SampleApplication_DoStreamStrea
 
 func main() {
 	app, err := pinpoint.NewApplication(
-		pinpoint.ConfigAppName("GoGrpcDemo"),
-		pinpoint.ConfigAgentID("GoGrpcDemo"),
-		pinpoint.ConfigCollectorUploaded(false),
-		pinpoint.ConfigCollectorIP("127.0.0.1"),
-		pinpoint.ConfigCollectorTCPPort(9994),
-		pinpoint.ConfigCollectorStatPort(9995),
-		pinpoint.ConfigCollectorSpanPort(9996),
-		pinpoint.ConfigDebugLogger(os.Stdout),
+		pinpoint.ConfigFromYaml("./pinpoint.yml"),
+		pinpoint.ConfigFromEnvironment(),
 	)
 	if nil != err {
 		panic(err)

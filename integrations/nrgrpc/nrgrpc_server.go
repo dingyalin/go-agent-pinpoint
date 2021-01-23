@@ -53,9 +53,8 @@ func startTransaction(ctx context.Context, app *pinpoint.Application, fullMethod
 // Example:
 //
 //	app, _ := pinpoint.NewApplication(
-//		pinpoint.ConfigAppName("gRPC Server"),
-//		pinpoint.ConfigLicense(os.Getenv("PINPOINT_LICENSE_KEY")),
-//		pinpoint.ConfigDebugLogger(os.Stdout),
+//      pinpoint.ConfigFromYaml("./pinpoint.yml"),
+//		pinpoint.ConfigFromEnvironment(),
 //	)
 //	server := grpc.NewServer(
 //		grpc.UnaryInterceptor(nrgrpc.UnaryServerInterceptor(app)),
@@ -114,9 +113,6 @@ func newWrappedServerStream(stream grpc.ServerStream, txn *pinpoint.Transaction)
 // Example:
 //
 //	app, _ := pinpoint.NewApplication(
-//		pinpoint.ConfigAppName("gRPC Server"),
-//		pinpoint.ConfigLicense(os.Getenv("PINPOINT_LICENSE_KEY")),
-//		pinpoint.ConfigDebugLogger(os.Stdout),
 //	)
 //	server := grpc.NewServer(
 //		grpc.UnaryInterceptor(nrgrpc.UnaryServerInterceptor(app)),

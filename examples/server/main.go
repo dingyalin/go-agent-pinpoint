@@ -197,9 +197,8 @@ func async(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	app, err := pinpoint.NewApplication(
-		pinpoint.ConfigCollectorUploaded(false),
+		//pinpoint.ConfigCollectorUploaded(false),
 		pinpoint.ConfigFromYaml("./pinpoint.yml"),
-		pinpoint.ConfigDebugLogger(os.Stdout),
 		pinpoint.ConfigFromEnvironment(),
 	)
 	if nil != err {

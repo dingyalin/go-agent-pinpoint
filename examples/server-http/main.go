@@ -47,10 +47,8 @@ func (h *handler) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
 
 func makeApplication() (*pinpoint.Application, error) {
 	app, err := pinpoint.NewApplication(
-		pinpoint.ConfigAppName("HTTP Server App"),
-		pinpoint.ConfigLicense(os.Getenv("PINPOINT_LICENSE_KEY")),
-		pinpoint.ConfigDebugLogger(os.Stdout),
-		pinpoint.ConfigDistributedTracerEnabled(true),
+		pinpoint.ConfigFromYaml("./pinpoint.yml"),
+		pinpoint.ConfigFromEnvironment(),
 	)
 	if nil != err {
 		return nil, err

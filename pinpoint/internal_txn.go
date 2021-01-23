@@ -589,7 +589,10 @@ func handeDatastoreSpanEvent(evt *spanEvent, tSpanEvent *trace.TSpanEvent) {
 		// destinationID
 		dbInstance := evt.AgentAttributes.getStringValue(SpanAttributeDBInstance)
 		if dbInstance == "" {
-			dbInstance = "UNKNOW"
+			dbInstance = evt.Component
+		}
+		if dbInstance == "" {
+			dbInstance = "UnKnown"
 		}
 		tSpanEvent.DestinationId = &dbInstance
 		// endpoint
@@ -1198,12 +1201,13 @@ func (thd *thread) NewGoroutine(name string) *Transaction {
 	}
 	newTxn.markStart(time.Now())
 
-	newTxn.IsAsync = true
-	newTxn.Attrs = &attributes{}
 	newTxn.Name = name
+	newTxn.Attrs = newAttributes(oldTxn.appRun.AttributeConfig)
+	newTxn.SpanID = oldTxn.SpanID
 	newTxn.TraceID = oldTxn.TraceID
 	newTxn.TraceIDEncoded = oldTxn.TraceIDEncoded
-	newTxn.SpanID = oldTxn.SpanID
+
+	newTxn.IsAsync = true
 	newTxn.AsyncID = oldTxn.genNextAsyncID()
 	newTxn.AsyncSequence = oldTxn.mainThread.sequenceCounter + 1
 

@@ -18,9 +18,9 @@ func main() {
 	logrus.SetLevel(logrus.DebugLevel)
 
 	app, err := pinpoint.NewApplication(
-		pinpoint.ConfigAppName("Logrus App"),
-		pinpoint.ConfigLicense(os.Getenv("PINPOINT_LICENSE_KEY")),
 		nrlogrus.ConfigStandardLogger(),
+		pinpoint.ConfigFromYaml("./pinpoint.yml"),
+		pinpoint.ConfigFromEnvironment(),
 	)
 
 	if nil != err {

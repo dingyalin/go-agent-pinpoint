@@ -30,10 +30,8 @@ func doRequest(txn *pinpoint.Transaction) error {
 
 func main() {
 	app, err := pinpoint.NewApplication(
-		pinpoint.ConfigAppName("Client App"),
-		pinpoint.ConfigLicense(os.Getenv("PINPOINT_LICENSE_KEY")),
-		pinpoint.ConfigDebugLogger(os.Stdout),
-		pinpoint.ConfigDistributedTracerEnabled(true),
+		pinpoint.ConfigFromYaml("./pinpoint.yml"),
+		pinpoint.ConfigFromEnvironment(),
 	)
 	if nil != err {
 		fmt.Println(err)

@@ -283,6 +283,9 @@ func StartExternalSegment(txn *Transaction, request *http.Request) *ExternalSegm
 	if nil == txn {
 		txn = transactionFromRequestContext(request)
 	}
+	if nil == txn {
+		return nil
+	}
 	s := &ExternalSegment{
 		StartTime:  txn.StartSegmentNow(),
 		Request:    request,

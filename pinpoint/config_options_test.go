@@ -18,9 +18,6 @@ collector:
   tcp_port: 9984
   stat_port: 9985
   span_port: 9986
-log:	
-  std: 
-  level: 
 `
 
 	cfgOpt := configFromYaml([]byte(data), nil)
