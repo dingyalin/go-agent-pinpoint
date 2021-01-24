@@ -1,6 +1,10 @@
 
 # Pinpoint Go Agent
 
+![](images/topology.png)
+
+![](images/stack.png)
+
 ## Example
 
 ```
