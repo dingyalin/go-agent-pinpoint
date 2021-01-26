@@ -579,11 +579,13 @@ func (app *app) getState() (*appRun, error) {
 	app.RLock()
 	defer app.RUnlock()
 
-	run := app.run
-	if nil == run {
-		run = app.placeholderRun
-	}
-	return run, app.err
+	/*
+		run := app.run
+		if nil == run {
+			run = app.placeholderRun
+		}
+	*/
+	return app.run, app.err
 }
 
 func (app *app) setState(run *appRun, err error) {
@@ -626,11 +628,24 @@ func newTransaction(thd *thread) *Transaction {
 
 // StartTransaction implements newrelic.Application's StartTransaction.
 func (app *app) StartTransaction(name string) *Transaction {
+	// app
 	if nil == app {
 		return nil
 	}
-	run, _ := app.getState()
-	return newTransaction(newTxn(app, run, name))
+
+	// run
+	run, err := app.getState()
+	if nil == run || err != nil {
+		return nil
+	}
+
+	// txn
+	txn := newTxn(app, run, name)
+	if nil == txn {
+		return nil
+	}
+
+	return newTransaction(txn)
 }
 
 var (

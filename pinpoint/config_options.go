@@ -28,6 +28,11 @@ func ConfigAppName(appName string) ConfigOption {
 	return func(cfg *Config) { cfg.AppName = appName }
 }
 
+// ConfigSamplingRate ...
+func ConfigSamplingRate(rate int) ConfigOption {
+	return func(cfg *Config) { cfg.SamplingRate = rate }
+}
+
 // ConfigAgentID sets the agent id.
 func ConfigAgentID(agentID string) ConfigOption {
 	return func(cfg *Config) { cfg.AgentID = agentID }
@@ -263,10 +268,11 @@ func getLabels(env string) map[string]string {
 }
 
 type yamlConfig struct {
-	Enabled   *bool  `yaml:"enabled"`
-	AppName   string `yaml:"app_name"`
-	AgentID   string `yaml:"agent_id"`
-	Collector struct {
+	Enabled      *bool  `yaml:"enabled"`
+	AppName      string `yaml:"app_name"`
+	AgentID      string `yaml:"agent_id"`
+	SamplingRate int    `yaml:"sampling_rate"`
+	Collector    struct {
 		IP       string `yaml:"ip"`
 		TCPPort  int    `yaml:"tcp_port"`
 		StatPort int    `yaml:"stat_port"`
@@ -318,6 +324,9 @@ func configFromYaml(data []byte, err error) ConfigOption {
 		}
 		if yc.Collector.SpanPort != 0 {
 			cfg.Collector.SpanPort = yc.Collector.SpanPort
+		}
+		if yc.SamplingRate > 0 {
+			cfg.SamplingRate = yc.SamplingRate
 		}
 
 		if std := yc.Log.STD; std != "" {

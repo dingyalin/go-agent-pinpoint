@@ -3,6 +3,7 @@
 enabled: true
 app_name: my_app
 agent_id: my_agent
+sampling_rate: 5 # 20%
 collector:
   ip: 127.0.0.1
   tcp_port: 9994

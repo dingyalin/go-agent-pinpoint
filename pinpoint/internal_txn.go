@@ -139,6 +139,19 @@ func genRandSpanID() int64 {
 }
 
 func newTxn(app *app, run *appRun, name string) *thread {
+	if app == nil || run == nil {
+		return nil
+	}
+
+	sequenceID := nextSequenceID()
+	if app.config.SamplingRate > 1 && (sequenceID-1)%int64(app.config.SamplingRate) != 0 {
+		app.config.Logger.Debug("skip transaction", map[string]interface{}{
+			"SequenceID":   sequenceID,
+			"SamplingRate": app.config.SamplingRate,
+		})
+		return nil
+	}
+
 	txn := &txn{
 		app:    app,
 		appRun: run,
@@ -147,8 +160,9 @@ func newTxn(app *app, run *appRun, name string) *thread {
 
 	txn.Name = name
 	txn.Attrs = newAttributes(run.AttributeConfig)
+	txn.SequenceID = sequenceID
 	txn.SpanID = txn.nextSpanID()
-	txn.SequenceID = nextSequenceID()
+
 	txn.TraceID = strings.Join([]string{app.config.AgentID, strconv.FormatInt(app.startTime, 10), strconv.FormatInt(txn.SequenceID, 10)}, "^")
 	txn.TraceIDEncoded = encodeTraceID(app.config.AgentID, app.startTime, txn.SequenceID)
 

@@ -56,6 +56,8 @@ type Config struct {
 		TCPConnTimeout time.Duration
 	}
 
+	SamplingRate int
+
 	// License is your New Relic license key.
 	//
 	// https://docs.newrelic.com/docs/accounts/install-new-relic/account-setup/license-key
@@ -409,6 +411,8 @@ func defaultConfig() Config {
 	c.Enabled = true
 	c.ServiceType = io.ServiceTypeGo
 	c.APIMetaDataMapSize = 4096
+
+	c.SamplingRate = 5 // 20%
 
 	c.Collector.IP = "127.0.0.1"
 	c.Collector.TCPPort = 9994
